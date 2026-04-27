@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtCore import Qt, QTimer, QPointF
 from PyQt5.QtGui import QPainter, QPixmap, QTransform, QGuiApplication
 
+
 class Skateboard(QWidget):
     def __init__(self):
         super().__init__()
@@ -23,6 +24,7 @@ class Skateboard(QWidget):
         self.image = QPixmap("skateboard.png")
         self.qimage = self.image.toImage()
 
+        print("Image loaded:", not self.image.isNull())
         solid = self.get_solid_points()
         self.hitbox_poly = self.convex_hull(solid)
         # Physics (now relative to window)
