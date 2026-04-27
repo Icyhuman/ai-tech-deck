@@ -1,5 +1,6 @@
 import sys
 import math
+import os
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtCore import Qt, QTimer, QPointF
 from PyQt5.QtGui import QPainter, QPixmap, QTransform, QGuiApplication
@@ -21,7 +22,12 @@ class Skateboard(QWidget):
         self.move(screen.width() - self.width(), screen.height() - self.height())
 
         # Load image
-        self.image = QPixmap("skateboard.png")
+
+        base_dir = os.path.dirname(__file__)
+        img_path = os.path.join(base_dir, "skateboard.png")
+
+        self.image = QPixmap(img_path)
+
         self.qimage = self.image.toImage()
 
         print("Image loaded:", not self.image.isNull())
