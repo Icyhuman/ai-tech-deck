@@ -3,7 +3,7 @@ import math
 import os
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtCore import Qt, QTimer, QPointF
-from PyQt5.QtGui import QPainter, QPixmap, QTransform, QGuiApplication
+from PyQt5.QtGui import QPainter, QPixmap, QTransform, QGuiApplication, QCursor
 
 
 class Skateboard(QWidget):
@@ -196,6 +196,7 @@ class Skateboard(QWidget):
         return [transform.map(QPointF(x, y)) for x, y in self.hitbox_poly]
     # --- Physics ---
     def update_physics(self):
+        self.check_mouse_hover()
         self.pos += self.vel
         self.angle += self.omega
 
@@ -260,6 +261,30 @@ class Skateboard(QWidget):
 
         # Draw skateboard
         painter.drawPixmap(0, 0, self.image)
+
+    
+    def mousePressEvent(self, event):
+        local = event.pos()
+
+        # Transform to board space (same as before)
+        transform = QTransform()
+        transform.translate(self.pos.x() + self.image.width()/2,
+                            self.pos.y() + self.image.height()/2)
+        transform.rotate(self.angle)
+        transform.translate(-self.image.width()/2,
+                            -self.image.height()/2)
+
+        inverted, ok = transform.inverted()
+        if not ok:
+            event.ignore()
+            return
+
+        board_pos = inverted.map(local)
+
+        if self.point_in_polygon(board_pos.x(), board_pos.y(), self.hitbox_poly):
+            event.accept()   # interact with skateboard
+        else:
+            event.ignore()   # let OS try to pass it on
 
 
 
